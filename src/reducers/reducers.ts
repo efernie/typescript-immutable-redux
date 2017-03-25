@@ -6,7 +6,7 @@ import {
   SELECT_SUBREDDIT,
 } from '../actions/actions';
 
-export const selectedSubreddit = function selectedSubreddit(state = 'reactjs', action) {
+export const selectedSubreddit = function selectedSubreddit(state = 'reactjs', action: any) {
   switch (action.type) {
   case SELECT_SUBREDDIT:
     return action.subreddit;
@@ -21,7 +21,14 @@ const INITIAL_STATE = {
   items: [],
 };
 
-export const posts = function posts(state = INITIAL_STATE, action: any) {
+interface IAction {
+  type: string;
+  posts: Array<any>;
+  receivedAt: number;
+  subreddit: string;
+}
+
+export const posts = function posts(state = INITIAL_STATE, action: IAction) {
   switch (action.type) {
     case INVALIDATE_SUBREDDIT:
       return Object.assign({}, state, {
@@ -44,7 +51,7 @@ export const posts = function posts(state = INITIAL_STATE, action: any) {
   }
 };
 
-export const postsBySubreddit = function postsBySubreddit(state = { }, action) {
+export const postsBySubreddit = function postsBySubreddit(state: any = {}, action: IAction) {
   switch (action.type) {
     case INVALIDATE_SUBREDDIT:
     case RECEIVE_POSTS:

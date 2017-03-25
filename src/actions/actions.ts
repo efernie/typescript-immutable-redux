@@ -6,28 +6,34 @@ export const RECEIVE_POSTS: string = 'RECEIVE_POSTS';
 export const SELECT_SUBREDDIT: string = 'SELECT_SUBREDDIT';
 export const INVALIDATE_SUBREDDIT: string = 'INVALIDATE_SUBREDDIT';
 
-export function selectSubreddit(subreddit: object) {
+export function selectSubreddit(subreddit: string) {
   return {
     type: SELECT_SUBREDDIT,
     subreddit,
   };
 }
 
-export function invalidateSubreddit(subreddit: object) {
+export function invalidateSubreddit(subreddit: string) {
   return {
     type: INVALIDATE_SUBREDDIT,
     subreddit,
   };
 }
 
-function requestPosts(subreddit: object) {
+export function requestPosts(subreddit: string) {
   return {
     type: REQUEST_POSTS,
     subreddit,
   };
 }
 
-function receivePosts(subreddit: object, json: any) {
+export interface IJSONResponse {
+  data: {
+    children: any;
+  };
+};
+
+export function receivePosts(subreddit: string, json: IJSONResponse) {
   return {
     posts: json.data.children.map((child: any) => child.data),
     receivedAt: Date.now(),
@@ -36,16 +42,16 @@ function receivePosts(subreddit: object, json: any) {
   };
 }
 
-function fetchPosts(subreddit: object) {
+export function fetchPosts(subreddit: string) {
   return (dispatch: any) => {
     dispatch(requestPosts(subreddit));
     return fetch(`https://www.reddit.com/r/${subreddit}.json`)
-      .then((response) => response.json())
-      .then((json) => dispatch(receivePosts(subreddit, json)));
+      .then((response: any) => response.json())
+      .then((json: IJSONResponse) => dispatch(receivePosts(subreddit, json)));
   };
 }
 
-function shouldFetchPosts(state: any, subreddit: any) {
+export function shouldFetchPosts(state: any, subreddit: string) {
   const posts = state.postsBySubreddit[subreddit];
   if (!posts) {
     return true;
@@ -56,7 +62,7 @@ function shouldFetchPosts(state: any, subreddit: any) {
   }
 }
 
-export function fetchPostsIfNeeded(subreddit: any) {
+export function fetchPostsIfNeeded(subreddit: string) {
   return (dispatch: any, getState: any) => {
     if (shouldFetchPosts(getState(), subreddit)) {
       return dispatch(fetchPosts(subreddit));

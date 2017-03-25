@@ -1,6 +1,12 @@
 import * as React from 'react';
 
-export default class Picker extends React.Component {
+interface IPickerProps extends React.Props<any> {
+  onChange: (value: string) => void;
+  options: Array<any>;
+  value: string;
+};
+
+export default class Picker extends React.Component<IPickerProps, void> {
   public render() {
     const { value, onChange, options } = this.props;
 
@@ -18,12 +24,4 @@ export default class Picker extends React.Component {
       </span>
     );
   }
-};
-
-Picker.propTypes = {
-  onChange: React.PropTypes.func.isRequired,
-  options: React.PropTypes.arrayOf(
-    React.PropTypes.string.isRequired,
-  ).isRequired,
-  value: React.PropTypes.string.isRequired,
 };

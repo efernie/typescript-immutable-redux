@@ -1,6 +1,10 @@
 import * as React from 'react';
 
-export default class Posts extends React.Component {
+interface IPostsProps extends React.Props<any> {
+  posts: Array<any>;
+};
+
+export default class Posts extends React.Component<IPostsProps, void> {
   public render() {
     return (
       <ul>
@@ -10,8 +14,4 @@ export default class Posts extends React.Component {
       </ul>
     );
   }
-};
-
-Posts.propTypes = {
-  posts: React.PropTypes.array.isRequired,
 };
