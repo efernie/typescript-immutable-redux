@@ -12,4 +12,4 @@ cache:
 
 script:
   - npm run test:coverage
-  - npm run linst
+  - npm run lint
