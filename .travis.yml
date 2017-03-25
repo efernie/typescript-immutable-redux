@@ -3,8 +3,7 @@ node_js:
   - "7.7.3"
 
 cache:
-  directories:
-    - node_modules
+  yarn: true
 
 script:
   - npm run test
