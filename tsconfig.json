@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "outDir": "./build",
+    "allowJs": true,
+    "strictNullChecks": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false, // mocha
+    "noUnusedParameters": false,
+    "sourceMap": true,
+    "inlineSources": true,
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}

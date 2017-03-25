@@ -1,0 +1,6 @@
+--compilers ts-node/register
+--check-leaks
+--no-exit
+--require babel-polyfill
+--require ./test/mocha-runner
+--recursive
