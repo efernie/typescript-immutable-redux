@@ -6,6 +6,7 @@ import AsyncApp from './asyncapp';
 const store = configureStore();
 
 export default class Root extends React.Component<void, void> {
+
   public render() {
     return (
       <Provider store={store}>

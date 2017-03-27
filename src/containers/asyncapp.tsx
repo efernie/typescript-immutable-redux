@@ -3,17 +3,21 @@ import { connect, Dispatch } from 'react-redux';
 import { fetchPostsIfNeeded, invalidateSubreddit, selectSubreddit } from '../actions/actions';
 import Picker from '../components/picker';
 import Posts from '../components/posts';
+import { RedditRootState } from '../configureStore';
 
 interface IAsyncAppProps extends React.Props<any> {
-  dispatch: Dispatch<any>;
 
   isFetching: boolean;
   lastUpdated?: number;
   posts: Array<any>;
   selectedSubreddit: string;
+
+  selectSubreddit: Function;
+  fetchPostsIfNeeded: Function;
+  invalidateSubreddit: Function;
 };
 
-export class AsyncApp extends React.Component<IAsyncAppProps, void> {
+export class AsyncApp extends React.Component<IAsyncAppProps, any> {
   constructor(props: IAsyncAppProps) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -21,31 +25,33 @@ export class AsyncApp extends React.Component<IAsyncAppProps, void> {
   }
 
   public componentDidMount() {
-    const { dispatch, selectedSubreddit } = this.props;
-    dispatch(fetchPostsIfNeeded(selectedSubreddit));
+    const { fetchPostsIfNeeded, selectedSubreddit } = this.props;
+    fetchPostsIfNeeded(selectedSubreddit);
   }
 
   public componentDidUpdate(prevProps: IAsyncAppProps) {
     if (this.props.selectedSubreddit !== prevProps.selectedSubreddit) {
-      const { dispatch, selectedSubreddit } = this.props;
-      dispatch(fetchPostsIfNeeded(selectedSubreddit));
+      const { fetchPostsIfNeeded, selectedSubreddit } = this.props;
+      fetchPostsIfNeeded(selectedSubreddit);
     }
   }
 
   public handleChange(nextSubreddit: string) {
-    this.props.dispatch(selectSubreddit(nextSubreddit));
-    this.props.dispatch(fetchPostsIfNeeded(nextSubreddit));
+    this.props.selectSubreddit(nextSubreddit);
+    this.props.fetchPostsIfNeeded(nextSubreddit);
   }
 
   public handleRefreshClick(e: any) {
     e.preventDefault();
 
     const {
-      dispatch,
       selectedSubreddit,
+      invalidateSubreddit,
+      fetchPostsIfNeeded,
     } = this.props;
-    dispatch(invalidateSubreddit(selectedSubreddit));
-    dispatch(fetchPostsIfNeeded(selectedSubreddit));
+
+    invalidateSubreddit(selectedSubreddit);
+    fetchPostsIfNeeded(selectedSubreddit);
   }
 
   public render() {
@@ -85,24 +91,27 @@ export class AsyncApp extends React.Component<IAsyncAppProps, void> {
   }
 };
 
-export const mapStateToProps = (state: any) => {
-  const { selectedSubreddit, postsBySubreddit } = state;
-  const {
-    isFetching,
-    lastUpdated,
-    items: posts,
-  } = postsBySubreddit[selectedSubreddit] || {
-    isFetching: true,
-    items: [],
-    lastUpdated: 0,
-  };
-
+export const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
-    selectedSubreddit,
-    posts,
-    isFetching,
-    lastUpdated,
+    fetchPostsIfNeeded: (selectedSubreddit: string) => dispatch(fetchPostsIfNeeded(selectedSubreddit)),
+    invalidateSubreddit: (selectedSubreddit: string) => dispatch(invalidateSubreddit(selectedSubreddit)),
+    selectSubreddit: (nextSubreddit: string) =>  dispatch(selectSubreddit(nextSubreddit)),
   };
 };
 
-export default connect(mapStateToProps)(AsyncApp);
+interface ICreateViewStateProps {
+  posts: any;
+  selectedSubreddit: string;
+  isFetching: boolean;
+  lastUpdated: number;
+};
+
+export const mapStateToProps: (state: RedditRootState) => ICreateViewStateProps =
+  ({ reddit: state }) => ({
+    isFetching: state.postsBySubreddit.isFetching,
+    lastUpdated: state.postsBySubreddit.lastUpdated,
+    posts: state.postsBySubreddit.items,
+    selectedSubreddit: state.selectedSubreddit.subreddit,
+});
+
+export default connect<{}, {}, {}>(mapStateToProps, mapDispatchToProps)(AsyncApp);

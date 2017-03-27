@@ -1,3 +1,4 @@
+import { Record } from 'immutable';
 import { combineReducers } from 'redux';
 import {
   INVALIDATE_SUBREDDIT,
@@ -6,10 +7,20 @@ import {
   SELECT_SUBREDDIT,
 } from '../actions/actions';
 
-export const selectedSubreddit = function selectedSubreddit(state = 'reactjs', action: any) {
+const SelectedStateRecord = Record({
+  subreddit: 'reactjs',
+});
+
+export class SelectedState extends SelectedStateRecord {
+  public subreddit: string;
+};
+
+const initialSelectedState = new SelectedState();
+
+export const selectedSubreddit = function selectedSubreddit(state = initialSelectedState, action: any): SelectedState {
   switch (action.type) {
   case SELECT_SUBREDDIT:
-    return action.subreddit;
+    return state.set('subreddit', action.subreddit); // action.subreddit;
   default:
     return state;
   }

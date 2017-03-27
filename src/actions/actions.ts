@@ -1,6 +1,14 @@
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
+import { Dispatch } from 'react-redux';
+import { ThunkAction } from 'redux-thunk';
+
+import { RedditRootState } from '../configureStore';
+
+type GetState = () => RedditRootState;
+type OeThunkAction<A> = ThunkAction<A, RedditRootState, void>;
+
 export const REQUEST_POSTS: string = 'REQUEST_POSTS';
 export const RECEIVE_POSTS: string = 'RECEIVE_POSTS';
 export const SELECT_SUBREDDIT: string = 'SELECT_SUBREDDIT';
@@ -51,8 +59,10 @@ export function fetchPosts(subreddit: string) {
   };
 }
 
-export function shouldFetchPosts(state: any, subreddit: string) {
-  const posts = state.postsBySubreddit[subreddit];
+export function shouldFetchPosts(getState: () => RedditRootState, subreddit: string) {
+  const rootState = getState().reddit;
+  const rootJS = rootState.toJS();
+  const posts = rootJS.postsBySubreddit[subreddit];
   if (!posts) {
     return true;
   } else if (posts.isFetching) {
@@ -63,8 +73,8 @@ export function shouldFetchPosts(state: any, subreddit: string) {
 }
 
 export function fetchPostsIfNeeded(subreddit: string) {
-  return (dispatch: any, getState: any) => {
-    if (shouldFetchPosts(getState(), subreddit)) {
+  return (dispatch: any, getState: () => RedditRootState) => {
+    if (shouldFetchPosts(getState, subreddit)) {
       return dispatch(fetchPosts(subreddit));
     }
   };
