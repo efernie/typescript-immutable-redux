@@ -9,7 +9,7 @@ interface IAsyncAppProps extends React.Props<any> {
 
   isFetching: boolean;
   lastUpdated?: number;
-  posts: Array<any>;
+  posts: Array<{title: string}>;
   selectedSubreddit: string;
 
   selectSubreddit: Function;

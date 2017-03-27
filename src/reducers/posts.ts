@@ -8,7 +8,7 @@ import {
 
 interface IAction {
   type: string;
-  posts: Array<any>;
+  posts: Array<{title: string}>;
   receivedAt: number;
   subreddit: string;
   lastUpdated: string;
@@ -24,7 +24,7 @@ const PostsRecord = Record({
 export class PostsState extends PostsRecord {
   public didInvalidate: boolean;
   public isFetching: boolean;
-  public items: Array<any>;
+  public items: Array<{title: string}>;
   public lastUpdated: string;
 };
 
@@ -35,6 +35,7 @@ export default function postsBySubreddit(state: PostsState = initialPostsState, 
     case INVALIDATE_SUBREDDIT:
       return state.set('didInvalidate', true);
     case RECEIVE_POSTS:
+      console.log(action.posts)
       return state.withMutations((ctx) => {
           ctx.set('didInvalidate', false)
             .set('isFetching', false)

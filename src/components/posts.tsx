@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 interface IPostsProps extends React.Props<any> {
-  posts: Array<any>;
+  posts: Array<{title: string}>;
 };
 
 export default class Posts extends React.Component<IPostsProps, void> {
